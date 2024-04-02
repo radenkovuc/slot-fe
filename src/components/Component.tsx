@@ -1,33 +1,41 @@
 import {BlurFilter} from 'pixi.js';
 import {Container, Sprite, Stage, Text} from '@pixi/react';
-import {useMemo, useState} from 'react';
+import {useMemo} from 'react';
+import {useAnimatedSpinTextures} from "../hooks/AnimatedSpinTextures";
+import {useGameTextures} from "../hooks/GameTextures";
+import {useSpinTextures} from "../hooks/SpinTextures";
+import {SpinSprite} from "./sprites/SpinSprite";
+import {AnimatedSpinSprite} from "./sprites/AnimatedSpinSprite";
 
 export const MyComponent = () => {
-    const [url,setURL]=useState('https://pixijs.io/pixi-react/img/bunny.png')
     const blurFilter = useMemo(() => new BlurFilter(4), []);
-
-    const onClick=()=>{
-        setURL('https://slot-be.vercel.app/images/P_1.png')
-    }
+    const animatedSpinTextures = useAnimatedSpinTextures()
+    const spinTextures = useSpinTextures()
+    const gameTexture = useGameTextures()
 
     return (
-        <Stage options={{background: 0xffffff}}
+        <Stage width={800} height={800} options={{background: 0xffffff}}
         >
-            <Sprite
-                image={url}
-                x={400}
-                y={270}
-                anchor={{x: 0.5, y: 0.5}}
-                eventMode='static'
-                onclick={onClick}
-            />
+            {gameTexture && <Sprite texture={gameTexture} y={100} width={800} height={400}/>}
 
-            <Container x={400} y={330}>
+            <SpinSprite texture={spinTextures.get(3)} x={180} y={160}/>
+            <AnimatedSpinSprite textures={animatedSpinTextures.get(4)} x={180} y={240}/>
+            <SpinSprite texture={spinTextures.get(5)} x={180} y={320}/>
+
+            <SpinSprite texture={spinTextures.get(1)} x={340} y={160}/>
+            <AnimatedSpinSprite textures={animatedSpinTextures.get(4)} x={340} y={240}/>
+            <SpinSprite texture={spinTextures.get(7)} x={340} y={320}/>
+
+            <SpinSprite texture={spinTextures.get(1)} x={340} y={160}/>
+            <AnimatedSpinSprite textures={animatedSpinTextures.get(4)} x={340} y={240}/>
+            <SpinSprite texture={spinTextures.get(7)} x={340} y={320}/>
+
+            <Container x={400} y={730}>
                 <Text text="Hello World" anchor={{x: 0.5, y: 0.5}} filters={[blurFilter]}
                       eventMode='static'
                       onclick={() => {
-                    console.log("radi")
-                }}/>
+                          console.log("radi")
+                      }}/>
             </Container>
         </Stage>
     );
