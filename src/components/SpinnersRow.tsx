@@ -1,18 +1,21 @@
 import {Container} from '@pixi/react';
-import {Graphics, Texture} from "pixi.js";
+import {Graphics} from "pixi.js";
 import {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+
+import {useSpinTextures} from "../hooks/SpinTextures";
+import {useAnimatedSpinTextures} from "../hooks/AnimatedSpinTextures";
+
+import {RootState} from "../store/store";
+import {setFinalSpin} from "../store/slotSlice.js";
 
 import {SpinSprite} from "./sprites/SpinSprite";
 import {AnimatedSpinSprite} from "./sprites/AnimatedSpinSprite";
 
 interface Props {
-    numbers: number[]
     position: number
     timer: number
     isWining?: boolean
-    spinTextures: Map<number, Texture>
-    animatedSpinTextures: Map<number, Texture[]>
-    onFinish: (selectedSpin: number) => void
 }
 
 type Item = {
@@ -21,16 +24,16 @@ type Item = {
 }
 
 export const SpinnersRow = ({
-                                numbers,
                                 position,
                                 timer,
                                 isWining,
-                                spinTextures,
-                                animatedSpinTextures,
-                                onFinish
                             }: Props) => {
     const [mask, setMask] = useState(new Graphics())
     const [items, setItems] = useState<Item[]>([])
+    const {slotOrder, isSpinning} = useSelector((state: RootState) => state)
+    const spinTextures = useSpinTextures()
+    const animatedSpinTextures = useAnimatedSpinTextures()
+    const dispatch = useDispatch()
 
     useEffect(() => {
         const mask = new Graphics()
@@ -42,46 +45,50 @@ export const SpinnersRow = ({
 
     useEffect(() => {
         const items: Item[] = []
-        numbers.forEach((n, i) => {
+        slotOrder.forEach((n, i) => {
             items.push({position: 80 * i + 60, id: n})
         })
         setItems(items)
+    }, [slotOrder])
 
-        let currentPosition = 0;
-        let currentTime = 0;
-        let increment = Math.floor(Math.random() * 100) + 300
+    useEffect(() => {
+        if (isSpinning) {
+            let currentPosition = 0;
+            let currentTime = 0;
+            let increment = Math.floor(Math.random() * 100) + 300
 
-        const slide = () => {
-            if (currentTime > timer) {
-                const selectedIndex = 9 - Math.floor(currentPosition / 80) - 1
+            const slide = () => {
+                if (currentTime > timer) {
+                    const selectedIndex = 9 - Math.floor(currentPosition / 80) - 1
 
-                const newNumbers = numbers.slice(selectedIndex).concat(numbers.slice(0, selectedIndex));
+                    const newSlotOrder = slotOrder.slice(selectedIndex).concat(slotOrder.slice(0, selectedIndex));
 
-                const items: Item[] = []
-                newNumbers.forEach((n, i) => {
-                    items.push({position: 80 * i + 60, id: n})
-                })
-                setItems(items)
-                onFinish(((selectedIndex + 1) % 9) + 1)
-                clearInterval(interval);
-            } else {
-                currentPosition = (currentPosition + increment + 20) % 720
-                currentTime += 50
-                increment -= Math.floor(increment * currentTime / timer)
-                const items: Item[] = []
-                numbers.forEach((n, i) => {
-                    items.push({position: (80 * i + 60 + currentPosition) % 720, id: n})
-                })
-                setItems(items)
+                    updateItems(newSlotOrder,0)
+                    dispatch(setFinalSpin(((selectedIndex + 1) % 9) + 1))
+                    clearInterval(interval);
+                } else {
+                    currentPosition = (currentPosition + increment + 20) % 720
+                    currentTime += 50
+                    increment -= Math.floor(increment * currentTime / timer)
+                    updateItems(slotOrder,currentPosition)
+                }
             }
+
+            const interval = setInterval(slide, 50);
+
+            return () => {
+                clearInterval(interval);
+            };
         }
-        const interval = setInterval(slide, 50);
+    }, [slotOrder, timer, dispatch, isSpinning])
 
-        return () => {
-            clearInterval(interval);
-        };
-    }, [numbers, timer])
-
+    const updateItems = (slotOrder: number[], startPosition: number) => {
+        const items: Item[] = []
+        slotOrder.forEach((n, i) => {
+            items.push({position: (80 * i + 60 + startPosition) % 720, id: n})
+        })
+        setItems(items)
+    }
 
     return <Container mask={mask} x={position}>
         {items.map((item, index) => isWining && index === 1 ?

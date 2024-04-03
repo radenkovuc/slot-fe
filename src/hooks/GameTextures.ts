@@ -1,21 +1,28 @@
 import {useEffect, useState} from "react";
 import {Spritesheet, Texture} from "pixi.js";
 
-import data from '../data/GAME.json'
+import gameData from '../data/GAME.json'
+import uiData from '../data/UI.json'
 
 export const useGameTextures = () => {
-    const [game, setGame] = useState<Texture | undefined>();
+    const [gameTable, setGameTable] = useState<Texture | undefined>();
+    const [jackpot, setJackpot] = useState<Texture | undefined>();
 
     useEffect(() => {
         const load = async () => {
-            const sheet = new Spritesheet(Texture.from(data.meta.image), data);
-            await sheet.parse();
-            const gameTexture = sheet.textures.game
-            setGame(gameTexture);
+            let gameSheet = new Spritesheet(Texture.from(gameData.meta.image), gameData);
+            await gameSheet.parse();
+            const gameTexture = gameSheet.textures.game
+            setGameTable(gameTexture);
+
+            const uiSheet = new Spritesheet(Texture.from(uiData.meta.image), uiData);
+            await uiSheet.parse();
+            const jackpotTexture = uiSheet.textures.JACK_WND
+            setJackpot(jackpotTexture);
         }
 
         void load()
     }, [])
 
-    return game
+    return {gameTable, jackpot}
 }
