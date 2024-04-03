@@ -8,8 +8,8 @@ import {WinnerType} from "../domain/WinnerType";
 import {SpinnersRow} from "./SpinnersRow";
 
 
-export const SpinnersField = () => {
-    const winnerType = useSelector((state: RootState) => state.slot.winnerType)
+export const SpinnersTable = () => {
+    const winnerType = useSelector((state: RootState) => state.winnerType)
 
     return <Container x={180} y={220} height={200} width={200}>
         <SpinnersRow position={0} timer={3000}

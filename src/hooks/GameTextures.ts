@@ -7,6 +7,7 @@ import uiData from '../data/UI.json'
 export const useGameTextures = () => {
     const [gameTable, setGameTable] = useState<Texture | undefined>();
     const [jackpot, setJackpot] = useState<Texture | undefined>();
+    const [button, setButton] = useState<Texture | undefined>();
 
     useEffect(() => {
         const load = async () => {
@@ -18,11 +19,13 @@ export const useGameTextures = () => {
             const uiSheet = new Spritesheet(Texture.from(uiData.meta.image), uiData);
             await uiSheet.parse();
             const jackpotTexture = uiSheet.textures.JACK_WND
+            const buttonTexture = uiSheet.textures.b_gamble_A
             setJackpot(jackpotTexture);
+            setButton(buttonTexture);
         }
 
         void load()
     }, [])
 
-    return {gameTable, jackpot}
+    return {gameTable, jackpot, button}
 }

@@ -15,7 +15,7 @@ const initialState: CounterState = {
     slotOrder: getRandomArray(9),
     winnerType: WinnerType.NONE,
     finalSpins: [],
-    isSpinning: true
+    isSpinning: false
 }
 
 export const slotSlice = createSlice({
@@ -42,7 +42,7 @@ export const slotSlice = createSlice({
         startSpinning: (state, action: PayloadAction<number[]>) => {
             state.slotOrder = action.payload
             state.finalSpins = []
-            state.isSpinning = false
+            state.isSpinning = true
             state.winnerType = WinnerType.NONE
         }
     },
