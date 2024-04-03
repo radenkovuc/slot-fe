@@ -23,14 +23,10 @@ type Item = {
     position: number
 }
 
-export const SpinnersRow = ({
-                                position,
-                                timer,
-                                isWining,
-                            }: Props) => {
+export const SpinnersRow = ({position, timer, isWining,}: Props) => {
     const [mask, setMask] = useState(new Graphics())
     const [items, setItems] = useState<Item[]>([])
-    const {slotOrder, isSpinning} = useSelector((state: RootState) => state)
+    const {slotOrder, isSpinning} = useSelector((state: RootState) => state.slot)
     const spinTextures = useSpinTextures()
     const animatedSpinTextures = useAnimatedSpinTextures()
     const dispatch = useDispatch()
@@ -38,7 +34,7 @@ export const SpinnersRow = ({
     useEffect(() => {
         const mask = new Graphics()
         mask.beginFill(0x999999);
-        mask.drawRect(position, 160, 300, 248);
+        mask.drawRect(position, 280, 300, 248);
         mask.endFill();
         setMask(mask)
     }, [position])
@@ -63,14 +59,14 @@ export const SpinnersRow = ({
 
                     const newSlotOrder = slotOrder.slice(selectedIndex).concat(slotOrder.slice(0, selectedIndex));
 
-                    updateItems(newSlotOrder,0)
+                    updateItems(newSlotOrder, 0)
                     dispatch(setFinalSpin(((selectedIndex + 1) % 9) + 1))
                     clearInterval(interval);
                 } else {
                     currentPosition = (currentPosition + increment + 20) % 720
                     currentTime += 50
                     increment -= Math.floor(increment * currentTime / timer)
-                    updateItems(slotOrder,currentPosition)
+                    updateItems(slotOrder, currentPosition)
                 }
             }
 

@@ -5,5 +5,5 @@ import {useGameTextures} from "../hooks/GameTextures";
 export const GameTable = () => {
     const {gameTable} = useGameTextures()
 
-    return gameTable ? <Sprite texture={gameTable} y={100} width={800} height={400}/> : null
+    return gameTable ? <Sprite texture={gameTable} y={220} width={800} height={400}/> : null
 };

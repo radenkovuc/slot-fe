@@ -18,7 +18,7 @@ const initialState: CounterState = {
     isSpinning: true
 }
 
-export const slotSlice = createSlice({
+export const textureSlice = createSlice({
     name: 'slot',
     initialState,
     reducers: {
@@ -48,4 +48,4 @@ export const slotSlice = createSlice({
     },
 })
 
-export const {setFinalSpin, startSpinning} = slotSlice.actions
+export const {setFinalSpin, startSpinning} = textureSlice.actions

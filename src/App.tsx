@@ -1,16 +1,14 @@
 import React from 'react';
 
+import {PixiStage} from "./components/PixiStage";
 import './App.css';
-import {MyComponent} from "./components/Component";
 
-function App() {
-    return (
-        <div className="App">
-            <div className="App-header">
-                <MyComponent/>
-            </div>
+const App = () => (
+    <div className="App">
+        <div className="App-header">
+            <PixiStage/>
         </div>
-    );
-}
+    </div>
+);
 
 export default App;
