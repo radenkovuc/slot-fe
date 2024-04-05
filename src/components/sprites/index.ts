@@ -1,0 +1,5 @@
+export {AnimatedSpinSprite} from "./AnimatedSpinSprite"
+export {GameTableSprite} from "./GameTableSprite"
+export {JackpotSprite} from "./JackpotSprite"
+export {SpinButtonSprite} from "./SpinButtonSprite"
+export {SpinSprite} from "./SpinSprite"

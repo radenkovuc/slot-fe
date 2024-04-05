@@ -1,14 +1,10 @@
 import {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 
-import {useSpinTextures} from "../hooks/SpinTextures";
-import {useAnimatedSpinTextures} from "../hooks/AnimatedSpinTextures";
+import {useAnimatedSpinTextures, useSpinTextures} from "../../hooks";
+import {finishSpinning, useAppSelector} from "../../store";
 
-import {RootState} from "../store/store";
-import {setFinalSpin} from "../store/slotSlice.js";
-
-import {SpinSprite} from "./sprites/SpinSprite";
-import {AnimatedSpinSprite} from "./sprites/AnimatedSpinSprite";
+import {AnimatedSpinSprite, SpinSprite} from "../sprites";
 
 interface Props {
     timer: number
@@ -22,22 +18,17 @@ type Item = {
 
 export const Spinners = ({timer, isWining}: Props) => {
     const [items, setItems] = useState<Item[]>([])
-    const {slotOrder, isSpinning} = useSelector((state: RootState) => state)
+    const {slotOrder, isSpinning} = useAppSelector((state) => state)
     const spinTextures = useSpinTextures()
     const animatedSpinTextures = useAnimatedSpinTextures()
     const dispatch = useDispatch()
 
     useEffect(() => {
-        const items: Item[] = []
-        slotOrder.forEach((n, i) => {
-            items.push({position: 80 * i + 60, id: n})
-        })
-        setItems(items)
+        updateItems(slotOrder, 0)
     }, [slotOrder])
 
     useEffect(() => {
         if (isSpinning) {
-            console.log("Spinning")
             let currentPosition = 0;
             let currentTime = 0;
             let increment = Math.floor(Math.random() * 100) + 300
@@ -49,7 +40,7 @@ export const Spinners = ({timer, isWining}: Props) => {
                     const newSlotOrder = slotOrder.slice(selectedIndex).concat(slotOrder.slice(0, selectedIndex));
 
                     updateItems(newSlotOrder, 0)
-                    dispatch(setFinalSpin(((selectedIndex + 1) % 9) + 1))
+                    dispatch(finishSpinning(((selectedIndex + 1) % 9) + 1))
                     clearInterval(interval);
                 } else {
                     currentPosition = (currentPosition + increment + 20) % 720

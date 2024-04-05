@@ -1,9 +1,12 @@
 import {configureStore} from '@reduxjs/toolkit'
+import {TypedUseSelectorHook, useSelector} from "react-redux";
 
-import {slotSlice} from "./slotSlice.js";
+import {slotSlice} from "./slotSlice";
 
 export const store = configureStore({
     reducer: slotSlice.reducer
 })
 
-export type RootState = ReturnType<typeof store.getState>
+type RootState = ReturnType<typeof store.getState>
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
+

@@ -1,19 +1,18 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 
-import {WinnerType} from "../domain/WinnerType";
-
-import {getRandomArray} from "../helpers/Commons";
+import {GameStatus} from "../domain";
+import {getRandomArray} from "../helpers";
 
 export interface CounterState {
     slotOrder: number[]
-    winnerType: WinnerType
+    gameStatus: GameStatus
     finalSpins: number[]
     isSpinning: boolean
 }
 
 const initialState: CounterState = {
     slotOrder: getRandomArray(9),
-    winnerType: WinnerType.NONE,
+    gameStatus: GameStatus.NO_MATCH,
     finalSpins: [],
     isSpinning: false
 }
@@ -22,19 +21,19 @@ export const slotSlice = createSlice({
     name: 'slot',
     initialState,
     reducers: {
-        setFinalSpin: (state, action: PayloadAction<number>) => {
+        finishSpinning: (state, action: PayloadAction<number>) => {
             const updatedSpins = [...state.finalSpins, action.payload]
             state.finalSpins = updatedSpins
 
             if (state.finalSpins.length === 3) {
                 if (updatedSpins[0] === updatedSpins[1]) {
                     if (updatedSpins[2] === updatedSpins[1]) {
-                        state.winnerType = WinnerType.THREE_FIELDS
+                        state.gameStatus = GameStatus.THREE_FIELDS_MATCH
                     } else {
-                        state.winnerType = WinnerType.TWO_FIELD
+                        state.gameStatus = GameStatus.TWO_FIELDS_MATCH
                     }
                 } else {
-                    state.winnerType = WinnerType.NONE
+                    state.gameStatus = GameStatus.NO_MATCH
                 }
                 state.isSpinning = false
             }
@@ -43,9 +42,9 @@ export const slotSlice = createSlice({
             state.slotOrder = action.payload
             state.finalSpins = []
             state.isSpinning = true
-            state.winnerType = WinnerType.NONE
+            state.gameStatus = GameStatus.NO_MATCH
         }
     },
 })
 
-export const {setFinalSpin, startSpinning} = slotSlice.actions
+export const {finishSpinning, startSpinning} = slotSlice.actions

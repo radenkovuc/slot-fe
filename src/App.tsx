@@ -1,12 +1,12 @@
 import React from 'react';
 
-import {PixiStage} from "./components/PixiStage";
+import {Game} from "./components/Game";
 import './App.css';
 
 const App = () => (
     <div className="App">
         <div className="App-header">
-            <PixiStage/>
+            <Game/>
         </div>
     </div>
 );

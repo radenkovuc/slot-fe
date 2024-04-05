@@ -1,0 +1,1 @@
+export {getSlotSequences} from "./ApiService"
